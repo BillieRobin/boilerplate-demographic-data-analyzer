@@ -5,6 +5,42 @@ def calculate_demographic_data(print_data=True):
     # Read data from file
     df = pd.read_csv('adult.data.csv')  #None
 
+
+
+    # Perform calculations
+    race_count = df['race'].value_counts()
+    average_age_men = round(df[df['sex'] == 'Male']['age'].mean(), 1)
+    percentage_bachelors = round((df[df['education'] == 'Bachelors'].shape[0] / df.shape[0]) * 100, 1)
+
+    higher_education = df[df['education'].isin(['Bachelors', 'Masters', 'Doctorate'])]
+    lower_education = df[~df['education'].isin(['Bachelors', 'Masters', 'Doctorate'])]
+
+    higher_education_rich = round(
+        (higher_education[higher_education['salary'] == '>50K'].shape[0] / higher_education.shape[0]) * 100, 
+        1
+    )
+    
+    lower_education_rich = round(
+        (lower_education[lower_education['salary'] == '>50K'].shape[0] / lower_education.shape[0]) * 100, 
+        1
+    )
+
+    min_work_hours = df['hours-per-week'].min()
+    
+    min_workers = df[df['hours-per-week'] == min_work_hours]
+    rich_percentage = round(
+        (min_workers[min_workers['salary'] == '>50K'].shape[0] / min_workers.shape[0]) * 100, 
+        1
+    )
+
+    country_salary_stats = df.groupby('native-country')['salary'].apply(lambda x: (x == '>50K').mean() * 100)
+    highest_earning_country = country_salary_stats.idxmax()
+    highest_earning_country_percentage = round(country_salary_stats.max(), 1)
+
+    india_rich = df[(df['native-country'] == 'India') & (df['salary'] == '>50K')]
+    top_IN_occupation = india_rich['occupation'].mode()[0]
+
+"""
     # How many of each race are represented in this dataset? This should be a Pandas series with race names as the index labels.
     race_count =   df['race'].value_counts()  #None
 
@@ -40,7 +76,7 @@ def calculate_demographic_data(print_data=True):
 
     # Identify the most popular occupation for those who earn >50K in India.
     top_IN_occupation = ( df[(df['native-country'] == 'India') & (df['salary'] == '>50K')]['occupation'].mode()[0]  # Mode returns the most common value; [0] selects the first entry)   #None
-
+"""
                          
                          
     # DO NOT MODIFY BELOW THIS LINE
